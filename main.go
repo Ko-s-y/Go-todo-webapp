@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	_ "github.com/lib/pq"
@@ -25,11 +24,13 @@ type Todo struct {
 	Until       time.Time `bun:"until,nullzero"`
 	CreatedAt   time.Time
 	UpdatetedAt time.Time `bun:",nullzero"`
-	DeletedAt   time.Time `bun:"soft_delete,nullzero"`
+	DeletedAt   time.Time `bun:"column:soft_delete,nullzero"`
 }
 
 func main() {
-	sqldb, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	connStr := "user=s-ko dbname=postgres sslmode=disable"
+
+	sqldb, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatal(err)
 	}
