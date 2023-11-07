@@ -33,6 +33,20 @@ type Data struct {
 	Errors []error
 }
 
+func customFunc(todo *Todo) func([]string) []error {
+	return func(values []string) []error {
+		if len(values) == 0 || values[0] == "" {
+			return nil
+		}
+		dt, err := time.Parse("2006-01-02T15:04 MST", values[0]+" JST")
+		if err != nil {
+			return []error{echo.NewBindingError("until", values[0:1], "failed to decode time", err)}
+		}
+		todo.Until = dt
+		return nil
+	}
+}
+
 func main() {
 	connStr := "user=s-ko dbname=postgres sslmode=disable"
 
