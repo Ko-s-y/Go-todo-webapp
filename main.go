@@ -19,13 +19,13 @@ import (
 type Todo struct {
 	bun.BaseModel `bun:"table:todos,alias:t"`
 
-	ID          int64     `bun:"id,pk,autoincrement"`
-	Content     string    `bun:"content,notnull"`
-	Done        bool      `bun:"done"`
-	Until       time.Time `bun:"until,nullzero"`
-	CreatedAt   time.Time
-	UpdatetedAt time.Time `bun:",nullzero"`
-	DeletedAt   time.Time `bun:"column:soft_delete,nullzero"`
+	ID        int64     `bun:"id,pk,autoincrement"`
+	Content   string    `bun:"content,notnull"`
+	Done      bool      `bun:"done"`
+	Until     time.Time `bun:"until,nullzero"`
+	CreatedAt time.Time
+	UpdatedAt time.Time `bun:",nullzero"`
+	DeletedAt time.Time `bun:",soft_delete,nullzero"`
 }
 
 type Data struct {
