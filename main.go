@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"html/template"
+	"io"
 	"log"
 	"net/http"
 	"time"
@@ -47,6 +49,21 @@ func customFunc(todo *Todo) func([]string) []error {
 	}
 }
 
+type Template struct {
+	templates *template.Template
+}
+
+func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	return t.templates.ExecuteTemplate(w, name, data)
+}
+
+func formatDateTime(d time.Time) string {
+	if d.IsZero() {
+		return ""
+	}
+	return d.Format("2006-01-02 15:04")
+}
+
 func main() {
 	connStr := "user=s-ko dbname=postgres sslmode=disable"
 
@@ -69,6 +86,13 @@ func main() {
 	}
 
 	e := echo.New()
+
+	e.Renderer = &Template{
+		templates: template.Must(template.New("").
+			Funcs(template.FuncMap{
+				"FormatDateTime": formatDateTime,
+			}).ParseFS(templates, "templates/*")),
+	}
 
 	e.GET("/", func(c echo.Context) error {
 		var todos []Todo
